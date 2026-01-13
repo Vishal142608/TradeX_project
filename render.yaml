@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: tradex
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config_pro.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+    autoDeploy: true
+
+databases:
+  - name: tradex-db
+    databaseName: tradex
+    user: tradex
