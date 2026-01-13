@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Futures & Options{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center py-20 text-center">
+  <div class="mb-12">
+    <span
+      class="bg-red-500/10 text-red-500 text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest border border-red-500/20">High
+      Risk • High Reward</span>
+  </div>
+  <h1 class="text-6xl font-black mb-8 tracking-tighter italic">
+    F&O <span class="text-groww">TRADING</span>
+  </h1>
+  <p class="text-xl text-gray-500 max-w-2xl mb-12 font-medium leading-relaxed">
+    Trade indices and stock derivatives with high leverage. Currently in simulation beta.
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-4xl">
+    <div class="glass p-10 rounded-[40px] card-shadow text-left border-t-4 border-groww transition hover:scale-[1.02]">
+      <h3 class="text-xl font-black mb-2">NIFTY 50 FEB FUT</h3>
+      <p class="text-gray-500 text-xs mb-6 uppercase">Lot Size: 50</p>
+      <div class="flex justify-between items-end">
+        <p class="text-3xl font-black">₹21,850.40</p>
+        <button class="bg-groww text-black px-8 py-3 rounded-2xl font-black text-xs">BUY FUT</button>
+      </div>
+    </div>
+    <div
+      class="glass p-10 rounded-[40px] card-shadow text-left border-t-4 border-red-500 transition hover:scale-[1.02]">
+      <h3 class="text-xl font-black mb-2">BANKNIFTY FEB FUT</h3>
+      <p class="text-gray-500 text-xs mb-6 uppercase">Lot Size: 15</p>
+      <div class="flex justify-between items-end">
+        <p class="text-3xl font-black">₹45,600.25</p>
+        <button class="bg-red-500 text-white px-8 py-3 rounded-2xl font-black text-xs">SELL FUT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-20 glass p-8 rounded-[40px] max-w-md w-full">
+    <p class="text-gray-600 text-[10px] font-black uppercase tracking-widest">Option Chain coming soon</p>
+  </div>
+</div>
+{% endblock %}

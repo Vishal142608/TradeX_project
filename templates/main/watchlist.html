@@ -1,0 +1,77 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Watchlist{% endblock %}
+
+{% block content %}
+<div class="mb-10">
+  <h1 class="text-3xl font-extrabold tracking-tight mb-2">My Watchlist</h1>
+  <p class="text-gray-500">Track your favorite stocks and trade at the right time.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {% for item in watchlist %}
+  <div class="glass p-8 rounded-[40px] card-shadow relative group">
+    <a href="{% url 'remove_watchlist' item.stock.id %}"
+      class="absolute top-6 right-6 text-gray-700 hover:text-red-500 transition">
+      <i class="fas fa-bookmark"></i>
+    </a>
+    <div class="flex items-center space-x-6 mb-8">
+      <div
+        class="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center font-black text-2xl text-groww border border-white/10">
+        {{ item.stock.symbol|slice:":1" }}
+      </div>
+      <div>
+        <h3 class="text-lg font-black">{{ item.stock.symbol }}</h3>
+        <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest">{{ item.stock.name|slice:":20" }}</p>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-end">
+      <div>
+        <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-1">Live Price</p>
+        <p class="text-2xl font-black">₹{{ item.price|floatformat:2 }}</p>
+      </div>
+      <div class="text-right">
+        <span
+          class="inline-block px-3 py-1 rounded-full text-[10px] font-black {% if item.change_percent >= 0 %}bg-groww/10 text-groww{% else %}bg-red-500/10 text-red-500{% endif %}">
+          {% if item.change_percent >= 0 %}+{% endif %}{{ item.change_percent|floatformat:2 }}%
+        </span>
+      </div>
+    </div>
+
+    <div
+      class="mt-8 flex space-x-3 opacity-0 group-hover:opacity-100 transition translate-y-2 group-hover:translate-y-0">
+      <a href="{% url 'buy_stock' item.stock.id %}"
+        class="flex-1 bg-groww text-black py-4 rounded-2xl text-xs font-black text-center border-b-4 border-[#00b386]">BUY</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-span-full glass p-20 rounded-[40px] text-center border-2 border-dashed border-white/5">
+    <i class="far fa-eye text-gray-800 text-6xl mb-6"></i>
+    <p class="text-gray-500 font-extrabold text-xl mb-2">Watchlist is empty</p>
+    <p class="text-gray-600 text-sm mb-8">Search for stocks to start tracking them.</p>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="mt-20">
+  <h2 class="text-2xl font-black mb-10">Trending Stocks</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for stock in popular_stocks %}
+    <div class="bg-white/5 border border-white/5 p-6 rounded-3xl hover:border-groww/50 transition cursor-pointer">
+      <div class="flex justify-between items-start mb-6">
+        <div class="w-10 h-10 bg-groww/10 rounded-xl flex items-center justify-center font-bold text-groww">
+          {{ stock.symbol|slice:":1" }}
+        </div>
+        <a href="{% url 'add_watchlist' stock.symbol %}" class="text-gray-600 hover:text-groww">
+          <i class="far fa-bookmark"></i>
+        </a>
+      </div>
+      <p class="font-black text-sm">{{ stock.symbol }}</p>
+      <p class="text-[10px] text-gray-500 font-bold mb-4">{{ stock.name|slice:":15" }}</p>
+      <p class="font-black text-lg">₹{{ stock.price|floatformat:2 }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

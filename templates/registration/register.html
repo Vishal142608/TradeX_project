@@ -1,0 +1,96 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Join TradeX{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-10">
+  <div class="glass p-10 rounded-[50px] card-shadow">
+    <h1 class="text-3xl font-black mb-2 text-center">Get Started</h1>
+    <p class="text-gray-500 text-center mb-10 text-sm">Join thousands of simulated traders today.</p>
+
+    <form method="POST" class="space-y-6" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl text-xs font-bold mb-6">
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Full Name -->
+      <div>
+        <label for="id_full_name" class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">
+          Full Name
+        </label>
+        {{ form.full_name }}
+        {% if form.full_name.errors %}
+        {% for error in form.full_name.errors %}
+        <p class="text-red-500 text-[10px] font-bold mt-2 pl-1 italic">
+          <i class="fas fa-exclamation-triangle mr-1"></i> {{ error }}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Phone Number -->
+      <div>
+        <label for="id_phone_number" class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">
+          Phone Number
+        </label>
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+        {% for error in form.phone_number.errors %}
+        <p class="text-red-500 text-[10px] font-bold mt-2 pl-1 italic">
+          <i class="fas fa-exclamation-triangle mr-1"></i> {{ error }}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="id_password" class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">
+          Password
+        </label>
+        {{ form.password }}
+        {% if form.password.errors %}
+        {% for error in form.password.errors %}
+        <p class="text-red-500 text-[10px] font-bold mt-2 pl-1 italic">
+          <i class="fas fa-exclamation-triangle mr-1"></i> {{ error }}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label for="id_confirm_password"
+          class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">
+          Confirm Password
+        </label>
+        {{ form.confirm_password }}
+        {% if form.confirm_password.errors %}
+        {% for error in form.confirm_password.errors %}
+        <p class="text-red-500 text-[10px] font-bold mt-2 pl-1 italic">
+          <i class="fas fa-exclamation-triangle mr-1"></i> {{ error }}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="pt-4">
+        <button type="submit"
+          class="w-full bg-groww text-black py-5 rounded-2xl text-sm font-black shadow-[0_10px_40px_rgba(0,208,156,0.2)] hover:translate-y-[-2px] transition border-b-4 border-[#00b386] active:translate-y-0">
+          CREATE ACCOUNT
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-8 text-center text-gray-500 text-xs">
+      Already have an account? <a href="{% url 'login' %}" class="text-groww font-black hover:underline">Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

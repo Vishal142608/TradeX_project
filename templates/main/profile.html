@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-4">
+  <div class="mb-10 text-center">
+    <h1 class="text-4xl font-black mb-2">My Profile</h1>
+    <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Manage your TradeX account</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Profile Sidebar -->
+    <div class="glass p-8 rounded-[40px] card-shadow flex flex-col items-center">
+      <div
+        class="w-32 h-32 bg-groww/10 rounded-[40px] flex items-center justify-center font-black text-5xl text-groww border border-groww/20 shadow-[0_0_50px_rgba(0,208,156,0.3)] mb-6">
+        {{ profile.full_name|slice:":1" }}
+      </div>
+      <h2 class="text-2xl font-black mb-1 text-center">{{ profile.full_name }}</h2>
+      <p class="text-gray-500 font-bold text-sm mb-6">@{{ profile.user.username }}</p>
+
+      <div class="w-full pt-6 border-t border-white/5 space-y-4">
+        <div class="flex justify-between items-center px-2">
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Status</span>
+          <span
+            class="bg-groww/10 text-groww text-[10px] px-3 py-1 rounded-full font-black border border-groww/20">VERIFIED</span>
+        </div>
+        <div class="flex justify-between items-center px-2">
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Joined</span>
+          <span class="text-xs font-black">{{ profile.user.date_joined|date:"M Y" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Details -->
+    <div class="md:col-span-2 glass p-10 rounded-[50px] card-shadow">
+      <h3 class="text-xl font-black mb-8 border-b border-white/5 pb-4">Account Details</h3>
+
+      <div class="space-y-8">
+        <div>
+          <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">Full Name</label>
+          <div class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white">
+            {{ profile.full_name }}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">Phone Number</label>
+          <div class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white">
+            +91 {{ profile.phone_number }}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2 pl-1">Wallet
+            Balance</label>
+          <div
+            class="w-full bg-groww/5 border border-groww/20 rounded-2xl px-6 py-4 text-sm font-black text-groww flex justify-between items-center">
+            <span>₹{{ profile.balance|floatformat:2 }}</span>
+            <span class="text-[10px] bg-groww/10 px-2 py-1 rounded-md">TOTAL AMOUNT</span>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-white/5">
+          <p class="text-[10px] text-gray-500 italic">Note: These details are currently read-only for security in the
+            simulation environment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Sell {{ stock.symbol }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-10">
+  <div class="glass p-10 rounded-[50px] card-shadow">
+    <div class="flex items-center space-x-6 mb-10">
+      <div
+        class="w-20 h-20 bg-red-500/10 rounded-[30px] flex items-center justify-center font-black text-3xl text-red-500 border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+        {{ stock.symbol|slice:":1" }}
+      </div>
+      <div>
+        <h1 class="text-3xl font-black mb-1">Sell {{ stock.symbol }}</h1>
+        <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">{{ stock.name }}</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 mb-10">
+      <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
+        <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-1">Market Price</p>
+        <p class="text-2xl font-black text-red-500">₹{{ price|floatformat:2 }}</p>
+      </div>
+      <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
+        <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-1">Your Holdings</p>
+        <p class="text-2xl font-black">{{ holding.quantity }} Units</p>
+      </div>
+    </div>
+
+    <form method="POST" class="space-y-8">
+      {% csrf_token %}
+      <div>
+        <label for="quantity" class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 pl-1">
+          {{ form.quantity.label }}
+        </label>
+        <div class="relative">
+          {{ form.quantity }}
+          <span class="absolute right-12 top-6 text-gray-600 font-bold text-sm pointer-events-none">Units</span>
+          <button type="button" onclick="setMax()"
+            class="absolute right-4 top-6 text-[10px] font-black text-groww uppercase">MAX</button>
+        </div>
+        {% if form.quantity.errors %}
+        {% for error in form.quantity.errors %}
+        <p class="text-red-500 text-[10px] font-bold mt-2 pl-1 italic">
+          <i class="fas fa-exclamation-triangle mr-1"></i> {{ error }}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </div>
+
+      <script>
+        function updateEstimate() {
+          const qtyInput = document.getElementById('quantity');
+          const qty = qtyInput.value;
+          const stockPrice = parseFloat("{{ price }}");
+          const totalVal = (qty * stockPrice).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          document.getElementById('estimate').innerText = totalVal;
+        }
+        function setMax() {
+          const maxQty = parseInt("{{ holding.quantity }}");
+          document.getElementById('quantity').value = maxQty;
+          updateEstimate();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+          const qtyField = document.getElementById('quantity');
+          if (qtyField) {
+            qtyField.addEventListener('input', updateEstimate);
+            updateEstimate();
+          }
+        });
+      </script>
+
+      <div class="pt-8 border-t border-white/5">
+        <div class="flex justify-between items-center mb-10">
+          <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Expected Proceeds</p>
+          <p class="text-3xl font-black">₹<span id="estimate">{{ price|floatformat:2 }}</span></p>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-red-500 text-white py-6 rounded-3xl text-lg font-black shadow-[0_10px_40px_rgba(239,68,68,0.3)] hover:translate-y-[-2px] transition active:translate-y-0 border-b-8 border-[#b91c1c]">
+          CONFIRM SELL
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-8 text-center">
+      <a href="{% url 'portfolio' %}"
+        class="text-xs font-bold text-gray-700 hover:text-white transition uppercase tracking-widest">Keep My Assets</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

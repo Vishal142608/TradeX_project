@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeX - {% block title %}Simulator{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .bg-groww {
+      background-color: #00d09c;
+    }
+
+    .text-groww {
+      color: #00d09c;
+    }
+
+    .border-groww {
+      border-color: #00d09c;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-shadow {
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-[#0f1115] text-white min-h-screen">
+  <!-- Navigation bar -->
+  <nav class="border-b border-white/5 bg-[#0f1115]/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <!-- Left side: Logo and Desktop Menu -->
+      <div class="flex items-center space-x-10">
+        <a href="{% url 'home' %}" class="text-2xl font-black italic tracking-tighter hover:opacity-80 transition">
+          TRADE<span class="text-groww">X</span>
+        </a>
+
+        <!-- Desktop Links (Hidden on Mobile) -->
+        <div
+          class="hidden lg:flex items-center space-x-8 text-[13px] font-bold uppercase tracking-widest text-gray-500">
+          {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'dashboard' %}text-groww{% endif %}">Portfolio</a>
+          <a href="{% url 'investment_summary' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'investment_summary' %}text-groww{% endif %}">Investment</a>
+          <a href="{% url 'watchlist' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'watchlist' %}text-groww{% endif %}">Watchlist</a>
+          <a href="{% url 'sip' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'sip' %}text-groww{% endif %}">SIP</a>
+          <a href="{% url 'fo' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'fo' %}text-groww{% endif %}">F&O</a>
+          <a href="{% url 'transactions' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'transactions' %}text-groww{% endif %}">History</a>
+          <a href="{% url 'profile' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'profile' %}text-groww{% endif %}">Profile</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right side: Balance and Hamburger/Logout -->
+      <div class="flex items-center space-x-4">
+        {% if user.is_authenticated %}
+        <!-- Balance (Visible on all screens) -->
+        <div class="flex items-center space-x-3 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+          <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none">DEMO ACCOUNT</span>
+          <span class="text-sm font-black text-groww">₹{{ user.profile.balance|floatformat:2 }}</span>
+        </div>
+
+        <!-- Desktop Logout (Hidden on Mobile) -->
+        <form action="{% url 'logout' %}" method="post" class="hidden lg:block">
+          {% csrf_token %}
+          <button type="submit"
+            class="text-xs font-black text-red-500/80 hover:text-red-500 uppercase tracking-widest transition">
+            Logout
+          </button>
+        </form>
+
+        <!-- Mobile Hamburger (Hidden on Desktop) -->
+        <button id="mobile-menu-btn" class="lg:hidden text-gray-400 hover:text-white transition text-2xl">
+          <i class="fas fa-bars"></i>
+        </button>
+        {% else %}
+        <div class="flex items-center space-x-6">
+          <a href="{% url 'login' %}"
+            class="text-sm font-black uppercase tracking-widest hover:text-groww transition">Login</a>
+          <a href="{% url 'register' %}"
+            class="bg-groww text-black px-6 py-3 rounded-2xl text-xs font-black hover:translate-y-[-2px] transition shadow-[0_10px_30px_rgba(0,208,156,0.2)]">SIGN UP</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Menu (Hidden by default) -->
+  <div id="mobile-menu"
+    class="fixed inset-0 z-[60] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+    <!-- Overlay -->
+    <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+    <!-- Drawer -->
+    <div
+      class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-[#0f1115] border-l border-white/10 p-8 flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center mb-12">
+        <span class="text-2xl font-black italic">TRADE<span class="text-groww">X</span></span>
+        <button id="mobile-menu-close" class="text-gray-400 hover:text-white text-2xl">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="flex flex-col space-y-6 text-lg font-black uppercase tracking-widest">
+        <a href="{% url 'dashboard' %}"
+          class="{% if request.resolver_match.url_name == 'dashboard' %}text-groww{% else %}text-gray-400{% endif %}">Portfolio</a>
+        <a href="{% url 'investment_summary' %}"
+          class="{% if request.resolver_match.url_name == 'investment_summary' %}text-groww{% else %}text-gray-400{% endif %}">Investment</a>
+        <a href="{% url 'watchlist' %}"
+          class="{% if request.resolver_match.url_name == 'watchlist' %}text-groww{% else %}text-gray-400{% endif %}">Watchlist</a>
+        <a href="{% url 'sip' %}"
+          class="{% if request.resolver_match.url_name == 'sip' %}text-groww{% else %}text-gray-400{% endif %}">SIP</a>
+        <a href="{% url 'fo' %}"
+          class="{% if request.resolver_match.url_name == 'fo' %}text-groww{% else %}text-gray-400{% endif %}">F&O</a>
+        <a href="{% url 'transactions' %}"
+          class="{% if request.resolver_match.url_name == 'transactions' %}text-groww{% else %}text-gray-400{% endif %}">History</a>
+        <a href="{% url 'profile' %}"
+          class="{% if request.resolver_match.url_name == 'profile' %}text-groww{% else %}text-gray-400{% endif %} border-t border-white/5 pt-6">Profile</a>
+
+        <form action="{% url 'logout' %}" method="post" class="pt-6">
+          {% csrf_token %}
+          <button type="submit" class="text-red-500 font-black uppercase tracking-widest text-left w-full">
+            Logout
+          </button>
+        </form>
+      </div>
+
+      <div class="mt-auto">
+        <div class="bg-groww/5 border border-groww/20 p-6 rounded-3xl">
+          <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Available Funds</p>
+          <p class="text-xl font-black text-groww">₹{{ user.profile.balance|floatformat:2 }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-10 py-10">
+    {% if messages %}
+    {% for message in messages %}
+    <div
+      class="max-w-4xl mx-auto mb-6 p-5 rounded-2xl flex items-center shadow-2xl animate-fade-in {% if message.tags == 'success' %}bg-groww/10 text-groww border border-groww/20{% else %}bg-red-500/10 text-red-500 border border-red-500/20{% endif %}">
+      <i
+        class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} mr-4 text-xl"></i>
+      <span class="text-sm font-bold tracking-tight">{{ message }}</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-white/5 py-16 mt-20 opacity-60">
+    <div class="container mx-auto px-6 text-center">
+      <div class="text-2xl font-black italic tracking-tighter mb-4">
+        TRADE<span class="text-groww">X</span>
+      </div>
+      <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">&copy; 2026 TradeX Simulator</p>
+      <p class="text-gray-600 text-[10px]">Built for high-performance trading practice in a simulated environment.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    const close = document.getElementById('mobile-menu-close');
+    const overlay = document.getElementById('mobile-menu-overlay');
+
+    if (btn && menu && close && overlay) {
+      const toggleMenu = () => {
+        menu.classList.toggle('translate-x-full');
+      };
+
+      btn.addEventListener('click', toggleMenu);
+      close.addEventListener('click', toggleMenu);
+      overlay.addEventListener('click', toggleMenu);
+    }
+  </script>
+</body>
+
+</html>

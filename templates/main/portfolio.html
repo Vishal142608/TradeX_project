@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+
+{% block title %}My Portfolio{% endblock %}
+
+{% block content %}
+<div class="mb-10 flex justify-between items-end">
+  <div>
+    <h1 class="text-3xl font-extrabold tracking-tight mb-2">My Holdings</h1>
+    <p class="text-gray-500">Track and manage your asset performance.</p>
+  </div>
+</div>
+
+<div class="glass rounded-[40px] overflow-hidden card-shadow">
+  <table class="w-full text-left">
+    <thead>
+      <tr class="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+        <th class="px-8 py-6">Instrument</th>
+        <th class="px-8 py-6">Qty</th>
+        <th class="px-8 py-6">Avg Price</th>
+        <th class="px-8 py-6">Market Price</th>
+        <th class="px-8 py-6">Returns</th>
+        <th class="px-8 py-6 text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white/5">
+      {% for holding in holdings %}
+      <tr class="group hover:bg-white/[0.02] transition">
+        <td class="px-8 py-6">
+          <p class="font-extrabold text-sm">{{ holding.stock.symbol }}</p>
+          <p class="text-[10px] text-gray-500 uppercase font-medium">{{ holding.stock.name }}</p>
+        </td>
+        <td class="px-8 py-6 font-bold text-sm">{{ holding.quantity }}</td>
+        <td class="px-8 py-6 font-bold text-sm">₹{{ holding.avg_price|floatformat:2 }}</td>
+        <td class="px-8 py-6 font-bold text-sm text-groww">₹{{ holding.current_price|floatformat:2 }}</td>
+        <td class="px-8 py-6">
+          <p class="font-extrabold text-sm {% if holding.pnl >= 0 %}text-groww{% else %}text-red-500{% endif %}">
+            {% if holding.pnl >= 0 %}+{% endif %}₹{{ holding.pnl|floatformat:2 }}
+          </p>
+          <p class="text-[10px] font-black {% if holding.pnl >= 0 %}text-groww/50{% else %}text-red-500/50{% endif %}">
+            {{ holding.pnl_percent|floatformat:2 }}%
+          </p>
+        </td>
+        <td class="px-8 py-6 text-right">
+          <div class="flex justify-end space-x-3">
+            <a href="{% url 'buy_stock' holding.stock.id %}"
+              class="bg-groww/10 text-groww px-4 py-2 rounded-xl text-xs font-bold hover:bg-groww hover:text-black transition">Buy
+              More</a>
+            <a href="{% url 'sell_stock' holding.stock.id %}"
+              class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition">Exit</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="px-8 py-20 text-center">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-wallet text-gray-800 text-5xl mb-4"></i>
+            <p class="text-gray-500 font-bold">No holdings yet.</p>
+            <a href="{% url 'dashboard' %}" class="mt-4 text-groww font-black text-sm hover:underline">Start Trading
+              →</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
