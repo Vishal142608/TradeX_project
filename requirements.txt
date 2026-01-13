@@ -1,8 +1,4 @@
-Django>=4.2,<5.0
-gunicorn==21.2.0
+Django>=4.2
+gunicorn
 mysqlclient==2.2.0
-python-dotenv==1.0.0
-djangorestframework==3.14.0
-
-# Production dependencies are in requirements-prod.txt
-# They will be installed automatically on Render.com
+python-dotenv
