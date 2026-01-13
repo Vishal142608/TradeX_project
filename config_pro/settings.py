@@ -11,11 +11,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
-import dj_database_url
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Import dj_database_url only if DATABASE_URL is set (production)
+if os.environ.get('DATABASE_URL'):
+    import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
