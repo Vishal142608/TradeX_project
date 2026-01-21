@@ -45,15 +45,15 @@
       <!-- Left side: Logo and Desktop Menu -->
       <div class="flex items-center space-x-10">
         <a href="{% url 'home' %}" class="text-2xl font-black italic tracking-tighter hover:opacity-80 transition">
-          TRADE<span class="text-groww">X</span>
+          TRADE<span class="text-red-600">X</span>
         </a>
 
         <!-- Desktop Links (Hidden on Mobile) -->
         <div
           class="hidden lg:flex items-center space-x-8 text-[13px] font-bold uppercase tracking-widest text-gray-500">
           {% if user.is_authenticated %}
-          <a href="{% url 'dashboard' %}"
-            class="hover:text-white transition {% if request.resolver_match.url_name == 'dashboard' %}text-groww{% endif %}">Portfolio</a>
+          <a href="{% url 'portfolio' %}"
+            class="hover:text-white transition {% if request.resolver_match.url_name == 'portfolio' %}text-groww{% endif %}">Portfolio</a>
           <a href="{% url 'investment_summary' %}"
             class="hover:text-white transition {% if request.resolver_match.url_name == 'investment_summary' %}text-groww{% endif %}">Investment</a>
           <a href="{% url 'watchlist' %}"
@@ -97,7 +97,8 @@
           <a href="{% url 'login' %}"
             class="text-sm font-black uppercase tracking-widest hover:text-groww transition">Login</a>
           <a href="{% url 'register' %}"
-            class="bg-groww text-black px-6 py-3 rounded-2xl text-xs font-black hover:translate-y-[-2px]: transition shadow-[0_10px_30px_rgba(0,208,156,0.2)]">SIGN UP</a>
+            class="bg-groww text-black px-6 py-3 rounded-2xl text-xs font-black hover:translate-y-[-2px]: transition shadow-[0_10px_30px_rgba(0,208,156,0.2)]">SIGN
+            UP</a>
         </div>
         {% endif %}
       </div>
@@ -105,14 +106,18 @@
   </nav>
 
   <!-- Mobile Drawer Menu (Hidden by default) -->
-  <div id="mobile-menu"
-    class="fixed inset-0 z-[60] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+  <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[85%] 
+         bg-#000/5 
+         isolate overflow-hidden
+         z-50 transform translate-x-full
+         transition-transform duration-300 ease-in-out
+         lg:hidden pointer-events-none" data-open="false">
     <!-- Overlay -->
-    <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div id="mobile-menu-overlay" class="absolute inset-0 bg-#000/10"></div>
 
     <!-- Drawer -->
     <div
-      class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-[#0f1115] border-l border-white/10 p-8 flex flex-col shadow-2xl">
+      class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-[#0f1115] border-l border-white/10 p-8 flex flex-col shadow-2xl z-10">
       <div class="flex justify-between items-center mb-12">
         <span class="text-2xl font-black italic">TRADE<span class="text-groww">X</span></span>
         <button id="mobile-menu-close" class="text-gray-400 hover:text-white text-2xl">
@@ -121,8 +126,8 @@
       </div>
 
       <div class="flex flex-col space-y-6 text-lg font-black uppercase tracking-widest">
-        <a href="{% url 'dashboard' %}"
-          class="{% if request.resolver_match.url_name == 'dashboard' %}text-groww{% else %}text-gray-400{% endif %}">Portfolio</a>
+        <a href="{% url 'portfolio' %}"
+          class="{% if request.resolver_match.url_name == 'portfolio' %}text-groww{% else %}text-gray-400{% endif %}">Portfolio</a>
         <a href="{% url 'investment_summary' %}"
           class="{% if request.resolver_match.url_name == 'investment_summary' %}text-groww{% else %}text-gray-400{% endif %}">Investment</a>
         <a href="{% url 'watchlist' %}"
@@ -188,6 +193,9 @@
     if (btn && menu && close && overlay) {
       const toggleMenu = () => {
         menu.classList.toggle('translate-x-full');
+        menu.classList.toggle('pointer-events-none');
+        const isOpen = !menu.classList.contains('translate-x-full');
+        menu.setAttribute('data-open', isOpen);
       };
 
       btn.addEventListener('click', toggleMenu);

@@ -24,7 +24,7 @@
     </thead>
     <tbody class="divide-y divide-white/5">
       {% for holding in holdings %}
-      <tr class="group hover:bg-white/[0.02]: transition">
+      <tr class="group hover:bg-white/[0.02] transition">
         <td class="px-8 py-6">
           <p class="font-extrabold text-sm">{{ holding.stock.symbol }}</p>
           <p class="text-[10px] text-gray-500 uppercase font-medium">{{ holding.stock.name }}</p>
@@ -46,7 +46,7 @@
               class="bg-groww/10 text-groww px-4 py-2 rounded-xl text-xs font-bold hover:bg-groww hover:text-black transition">Buy
               More</a>
             <a href="{% url 'sell_stock' holding.stock.id %}"
-              class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition">Exit</a>
+              class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition">Sell</a>
           </div>
         </td>
       </tr>

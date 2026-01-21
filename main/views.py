@@ -22,20 +22,26 @@ def register(request):
             phone = form.cleaned_data['phone_number']
             password = form.cleaned_data['password']
             
-            # Phone number is used as the internal username
-            user = User.objects.create_user(username=phone, password=password)
+            user = User.objects.create_user(
+                username=phone,
+                password=password
+            )
             
             profile, _ = Profile.objects.get_or_create(user=user)
             profile.full_name = full_name
             profile.phone_number = phone
             profile.save()
-            
-            login(request, user, backend='main.auth_backends.PhoneBackend')
-            messages.success(request, f"Welcome to TradeX, {full_name}!")
-            return redirect('dashboard')
+
+            messages.success(
+                request,
+                "Account created successfully. Please login to continue."
+            )
+            return redirect('login') 
     else:
         form = TradeXRegistrationForm()
+
     return render(request, 'registration/register.html', {'form': form})
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -109,7 +115,7 @@ def dashboard(request):
 
 @login_required
 def portfolio_view(request):
-    holdings = Portfolio.objects.filter(user=request.user)
+    holdings = Portfolio.objects.filter(user=request.user, quantity__gt=0)
     symbols = [h.stock.symbol for h in holdings]
     live_data = get_multiple_stocks(symbols)
     
